@@ -1,5 +1,5 @@
 #include "my_ble.h"
-#include "my-pcnt.h"
+#include "my_PCNT.h"
 
 #define WAIT_MS  10 // Time to wait (in milliseconds) before reporting pulse count reading
 
