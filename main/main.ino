@@ -9,6 +9,7 @@
  */
 
 #include "my_PCNT.h"
+#include "my_ble.h"
 
 #define WAIT_MS  10 // Time to wait (in milliseconds) before reporting pulse count reading
 
@@ -16,6 +17,7 @@
 void setup() {
   /* CONFIG: Printing to Console */
   Serial.begin(115200);                     // Set Baud to 115200
+  BLEInit();
 }
 
 void loop() {  
