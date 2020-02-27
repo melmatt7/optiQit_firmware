@@ -21,15 +21,10 @@ void setup() {
 }
 
 void loop() {  
-  int16_t count_0 = 0;                      // 16-bit count register
-  int16_t count_1 = 0;                      // 16-bit count register
+  int16_t count = 0;                      // 16-bit count register
 
   // notify changed value
   if (deviceConnected) {
-      pCharacteristic->setValue((uint8_t*)&value, 4);
-      pCharacteristic->notify();
-      value++;
-      delay(3); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3ms
       
       if (pcnt_init_and_start() != ESP_OK){     // Start counting pulses
         Serial.printf("\nFAILED: pcnt_init_and_start\n");
@@ -37,10 +32,19 @@ void loop() {
         Serial.printf("\nCounter started\n");
       }
       delay(WAIT_MS);                              
-      pcnt_get(&count_0, &count_1);
-      Serial.printf("\nCurrent counter_0 value :%d", count_0);
-      Serial.printf("\nCurrent counter_1 value :%d\n", count_1);
+      pcnt_get(&count);
+
+      // Update serial montior for local debugging
+      Serial.printf("\nCurrent counter_0 value :%d", count);
+
+      // Update bluetooth characteristic with count value for web app
+      pCharacteristic->setValue((uint8_t*)&value, count);
+      pCharacteristic->notify();
+
       pcnt_clear();
+
+      // Removed because we already have WAIT_MS delay
+      //delay(3); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3
   }
   // disconnecting
   if (!deviceConnected && oldDeviceConnected) {
