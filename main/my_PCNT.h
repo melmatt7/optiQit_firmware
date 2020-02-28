@@ -165,3 +165,13 @@ static esp_err_t pcnt_get(int16_t* pcount_0, int16_t* pcount_1) {
     
     return success;
 }
+
+static esp_err_t pcnt_get(int16_t* pcount_0) {
+    esp_err_t success;
+    
+    success = pcnt_counter_pause(PCNT_TEST_UNIT_0);
+    success = pcnt_get_counter_value(PCNT_TEST_UNIT_0, pcount_0);
+    success = pcnt_counter_resume(PCNT_TEST_UNIT_0);
+    
+    return success;
+}
