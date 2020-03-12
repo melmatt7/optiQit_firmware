@@ -13,7 +13,6 @@
 
 #define WAIT_MS  1000 // Time to wait (in milliseconds) before reporting pulse count reading
 
-
 void setup() {
   /* CONFIG: Printing to Console */
   Serial.begin(115200);                     // Set Baud to 115200
