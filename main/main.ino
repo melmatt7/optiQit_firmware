@@ -11,7 +11,7 @@
 #include "my_PCNT.h"
 #include "my_ble.h"
 
-#define WAIT_MS  1000 // Time to wait (in milliseconds) before reporting pulse count reading
+#define WAIT_MS  1 // Time to wait (in milliseconds) before reporting pulse count reading
 
 void setup() {
   /* CONFIG: Printing to Console */
@@ -46,11 +46,16 @@ void loop() {
       //delay(3); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3
   }
   // disconnecting
-  if (!deviceConnected && oldDeviceConnected) {
+  else if (!deviceConnected && oldDeviceConnected) {
       delay(500); // give the bluetooth stack the chance to get things ready
       pServer->startAdvertising(); // restart advertising
       Serial.println("start advertising");
       oldDeviceConnected = deviceConnected;
+  }
+    else if (!deviceConnected) {
+      delay(500); // give the bluetooth stack the chance to get things ready
+      pServer->startAdvertising(); // restart advertising
+      Serial.println("Please Connect via bluetooth in the app");
   }
   // connecting
   if (deviceConnected && !oldDeviceConnected) {
