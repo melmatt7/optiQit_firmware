@@ -48,11 +48,19 @@ void loop()
     {
       Serial.printf("\nCounter started\n");
     }
-    delay(WAIT_MS);
-    pcnt_get(&count);
+    int sum = 0;
+    for (int i = 0; i < 100; i++)
+    {
+      delay(WAIT_MS);
+      pcnt_get(&count);
 
-    // Update serial montior for local debugging
-    Serial.printf("\nCurrent counter_0 value :%d", count);
+      // Update serial montior for local debugging
+      //Serial.printf("\nCurrent counter_0 value :%d", count);
+
+      sum += count;
+    }
+
+    Serial.printf("\nAveraged value :%d", sum / 100);
 
     // Update bluetooth characteristic with count value for web app
     pCharacteristic->setValue((uint8_t *)&value, count);
