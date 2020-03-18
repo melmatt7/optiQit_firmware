@@ -25,13 +25,14 @@ void setup()
 
 void loop()
 {
-   distance = distance + 1; // record this step - 1 rotation for 1/16 bridge
-   LAC_forward();
-   if (distance == 6400) { 
-       // Reverse direction (invert DIR signal)
-       LAC_backward();
-       distance = 0; // Now pause for half a second delay(500);
-   }
+  distance = distance + 1; // record this step - 1 rotation for 1/16 bridge
+  LAC_forward();
+  if (distance == 6400)
+  {
+    // Reverse direction (invert DIR signal)
+    LAC_backward();
+    distance = 0; // Now pause for half a second delay(500);
+  }
 
   int16_t count = 0; // 16-bit count register
 
@@ -63,12 +64,18 @@ void loop()
     //delay(3); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3
   }
   // disconnecting
-  if (!deviceConnected && oldDeviceConnected)
+  else if (!deviceConnected && oldDeviceConnected)
   {
     delay(500);                  // give the bluetooth stack the chance to get things ready
     pServer->startAdvertising(); // restart advertising
     Serial.println("start advertising");
     oldDeviceConnected = deviceConnected;
+  }
+  else if (!deviceConnected)
+  {
+    delay(500);                  // give the bluetooth stack the chance to get things ready
+    pServer->startAdvertising(); // restart advertising
+    Serial.println("Please Connect via bluetooth in the app");
   }
   // connecting
   if (deviceConnected && !oldDeviceConnected)
