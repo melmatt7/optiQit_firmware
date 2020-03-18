@@ -10,51 +10,70 @@
 
 #include "my_PCNT.h"
 #include "my_ble.h"
+#include "my_LAC.h"
 
-#define WAIT_MS  1000 // Time to wait (in milliseconds) before reporting pulse count reading
+#define WAIT_MS 1     // Time to wait (in milliseconds) before reporting pulse count reading
+int16_t distance = 0; // Record the number of steps we've taken void
 
-void setup() {
+void setup()
+{
   /* CONFIG: Printing to Console */
-  Serial.begin(115200);                     // Set Baud to 115200
+  Serial.begin(115200); // Set Baud to 115200
   BLEInit();
+  LAC_init();
 }
 
-void loop() {  
-  int16_t count = 0;                      // 16-bit count register
+void loop()
+{
+   distance = distance + 1; // record this step - 1 rotation for 1/16 bridge
+   LAC_forward();
+   if (distance == 6400) { 
+       // Reverse direction (invert DIR signal)
+       LAC_backward();
+       distance = 0; // Now pause for half a second delay(500);
+   }
+
+  int16_t count = 0; // 16-bit count register
 
   // notify changed value
-  if (deviceConnected) {
-      
-      if (pcnt_init_and_start() != ESP_OK){     // Start counting pulses
-        Serial.printf("\nFAILED: pcnt_init_and_start\n");
-      } else {
-        Serial.printf("\nCounter started\n");
-      }
-      delay(WAIT_MS);                              
-      pcnt_get(&count);
+  if (deviceConnected)
+  {
 
-      // Update serial montior for local debugging
-      Serial.printf("\nCurrent counter_0 value :%d", count);
+    if (pcnt_init_and_start() != ESP_OK)
+    { // Start counting pulses
+      Serial.printf("\nFAILED: pcnt_init_and_start\n");
+    }
+    else
+    {
+      Serial.printf("\nCounter started\n");
+    }
+    delay(WAIT_MS);
+    pcnt_get(&count);
 
-      // Update bluetooth characteristic with count value for web app
-      pCharacteristic->setValue((uint8_t*)&value, count);
-      pCharacteristic->notify();
+    // Update serial montior for local debugging
+    Serial.printf("\nCurrent counter_0 value :%d", count);
 
-      pcnt_clear();
+    // Update bluetooth characteristic with count value for web app
+    pCharacteristic->setValue((uint8_t *)&value, count);
+    pCharacteristic->notify();
 
-      // Removed because we already have WAIT_MS delay
-      //delay(3); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3
+    pcnt_clear();
+
+    // Removed because we already have WAIT_MS delay
+    //delay(3); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3
   }
   // disconnecting
-  if (!deviceConnected && oldDeviceConnected) {
-      delay(500); // give the bluetooth stack the chance to get things ready
-      pServer->startAdvertising(); // restart advertising
-      Serial.println("start advertising");
-      oldDeviceConnected = deviceConnected;
+  if (!deviceConnected && oldDeviceConnected)
+  {
+    delay(500);                  // give the bluetooth stack the chance to get things ready
+    pServer->startAdvertising(); // restart advertising
+    Serial.println("start advertising");
+    oldDeviceConnected = deviceConnected;
   }
   // connecting
-  if (deviceConnected && !oldDeviceConnected) {
-      // do stuff here on connecting
-      oldDeviceConnected = deviceConnected;
+  if (deviceConnected && !oldDeviceConnected)
+  {
+    // do stuff here on connecting
+    oldDeviceConnected = deviceConnected;
   }
 }
