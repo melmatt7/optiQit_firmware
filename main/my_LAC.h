@@ -17,32 +17,33 @@ void LAC_init()
 {
     pinMode(16, OUTPUT);
 
-    pinMode(19, OUTPUT);
+    pinMode(2, OUTPUT);
 
     digitalWrite(16, LOW);
 
-    digitalWrite(19, LOW);
+    digitalWrite(2, LOW);
 }
 
-void LAC_forward()
+void LAC_move()
 {
     digitalWrite(16, HIGH);
 
-    delayMicroseconds(300);
+    delayMicroseconds(100);
 
     digitalWrite(16, LOW);
 
-    delayMicroseconds(300);
+    delayMicroseconds(100);
+
 }
 
-void LAC_backward()
+void LAC_dir()
 {
       delay(500);
 
-      if (digitalRead(19) == LOW) {
-          digitalWrite(19, HIGH);
-      }
-      else {
-          digitalWrite(19, LOW);
-      }
+//      if (digitalRead(19) == HIGH) {
+//          digitalWrite(19, LOW);
+//      }
+//      else {
+          digitalWrite(2, LOW);
+//      }
 }
