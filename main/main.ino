@@ -55,6 +55,7 @@ void loop()
       int sum = 0;
       for (int i = 0; i < 100; i++)
       {
+        pcnt_clear();
         delay(WAIT_MS);
         pcnt_get(&count);
 
