@@ -13,37 +13,55 @@
  * An interrupt will be triggered when the linear actuation completes.
  */
 
+// Example implementation:
+//   LAC_move();
+//   distance = distance + 1;
+//   if (distance == 1000)
+//   {
+//     //delay(5000);
+//     LAC_dir();
+//     distance = 0;
+//   }
+
+#define CLK 16
+#define CW 19
+
+/*
+ * Set CLK (determines when the actuator will move) to output
+ * Set CW (determines in which direction the actuator will move) to output
+*/
 void LAC_init()
 {
-    pinMode(16, OUTPUT);
+    pinMode(CLK, OUTPUT);
 
-    pinMode(2, OUTPUT);
+    pinMode(CW, OUTPUT);
 
-    digitalWrite(16, LOW);
+    digitalWrite(CLK, LOW);
 
-    digitalWrite(2, LOW);
+    digitalWrite(CW, LOW);
 }
 
+/*
+ * Every time a pulse is sent to the CLK, the actuator moves one step.
+*/
 void LAC_move()
 {
-    digitalWrite(16, HIGH);
+    digitalWrite(CLK, HIGH);
 
     delayMicroseconds(100);
 
-    digitalWrite(16, LOW);
+    digitalWrite(CLK, LOW);
 
     delayMicroseconds(100);
 
 }
 
+/* Moving the Linear Actuator may cause CW to be pulled high.
+ * Therefore, it is recommend to set the preferred direction
+ * after using LAC_move()
+ */
 void LAC_dir()
 {
-      delay(500);
-
-//      if (digitalRead(19) == HIGH) {
-//          digitalWrite(19, LOW);
-//      }
-//      else {
-          digitalWrite(2, LOW);
-//      }
+    delay(500);
+    digitalWrite(CW, LOW);
 }
