@@ -11,16 +11,21 @@
  * Ensure ports CW- and CLK- are grounded. 
  *
  * An interrupt will be triggered when the linear actuation completes.
+ *
+ * For the NEMA23 RTM23HS6430 2-Phase Stepper motor (compatible with TB6560 stepper driver),
+ * 1 step is (screw pitch) * (step angle) / 360 degrees
+ * For the NEMA23, this is 5 mm * 1.6 degrees/360 degrees = 0.02 mm, based on datasheet
+ * 1000 steps is 22 mm, for this particular motor.
  */
 
 // Example implementation:
+//   LAC_dir();
 //   LAC_move();
-//   distance = distance + 1;
-//   if (distance == 1000)
+//   deltaDistance = deltaDistance + 1;
+//   if (deltaDistance == 1000)
 //   {
-//     //delay(5000);
-//     LAC_dir();
-//     distance = 0;
+//     Put actions here
+//     deltaDistance = 0;
 //   }
 
 #define CLK 16
