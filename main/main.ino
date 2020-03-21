@@ -12,7 +12,7 @@
 #include "my_ble.h"
 #include "my_LAC.h"
 
-#define WAIT_MS 50    // Time to wait (in milliseconds) before reporting pulse count reading
+#define WAIT_MS 5    // Time to wait (in milliseconds) before reporting pulse count reading
 int16_t distance = 0; // Record the number of steps we've taken void
 
 void setup()
