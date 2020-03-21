@@ -25,24 +25,19 @@ void setup()
 
 void loop()
 {
-//   LAC_move();
-//   distance = distance + 1;
-//   if (distance == 1000)
-//   {
-//     //delay(5000);
-//     LAC_dir();
-//     distance = 0;
-//   }
 
   int16_t count = 0; // 16-bit count register
 
   // notify changed value
   if (deviceConnected)
   {
-    //Serial.printf("\nDevice Connect\n");
+    // Set direction and move one step
+    LAC_dir();
     LAC_move();
-    distance = distance + 1; // record this step - 1 rotation for 1/16 bridge
-    if (distance == 1000)
+    deltaDistance = deltaDistance + 1; // record this step - 1 rotation for 1/16 bridge
+
+    // Once 1000 steps have been reached
+    if (deltaDistance == 1000)
     {
       if (pcnt_init_and_start() != ESP_OK)
       { // Start counting pulses
@@ -58,47 +53,17 @@ void loop()
         pcnt_clear();
         delay(WAIT_MS);
         pcnt_get(&count);
-
-        // Update serial montior for local debugging
-        //Serial.printf("\nCurrent counter_0 value :%d", count);
-
         sum += count;
       }
 
-      Serial.printf("\nAveraged value :%d", sum / 100);
-      //digitalWrite(19, LOW);
+      Serial.printf("\nAverage count value :%d", sum / 100);
 
-      LAC_dir();
-      distance = 0;
+      deltaDistance = 0;
 
       // Update bluetooth characteristic with count value for web app
       pCharacteristic->setValue((uint8_t *)&value, sum / 100);
       pCharacteristic->notify();
 
-      pcnt_clear();
-
     }
-    // Removed because we already have WAIT_MS delay
-    //delay(3); // bluetooth stack will go into congestion, if too many packets are sent, in 6 hours test i was able to go as low as 3
   }
-  // disconnecting
-//  else if (!deviceConnected && oldDeviceConnected)
-//  {
-//    delay(500);                  // give the bluetooth stack the chance to get things ready
-//    pServer->startAdvertising(); // restart advertising
-//    Serial.println("start advertising");
-//    oldDeviceConnected = deviceConnected;
-//  }
-//  else if (!deviceConnected)
-//  {
-//    delay(500);                  // give the bluetooth stack the chance to get things ready
-//    pServer->startAdvertising(); // restart advertising
-//    Serial.println("Please Connect via bluetooth in the app");
-//  }
-  // connecting
-//  if (deviceConnected && !oldDeviceConnected)
-//  {
-//    // do stuff here on connecting
-//    oldDeviceConnected = deviceConnected;
-//  }
 }
